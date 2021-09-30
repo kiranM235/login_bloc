@@ -1,7 +1,8 @@
 import 'dart:async';
+
 import 'package:login_bloc/src/mixins/auth_validation_mixing.dart';
 
-class _AuthBloc with AuthValidationMixin {
+class AuthBloc with AuthValidationMixin {
   final StreamController<String> _emailController = StreamController();
   final StreamController<String> _passwordController = StreamController();
   final StreamController<String> _genderController = StreamController();
@@ -28,5 +29,12 @@ class _AuthBloc with AuthValidationMixin {
     _passwordController.close();
     _genderController.close();
   }
+
+  void listenStreams() {
+    _emailController.stream.listen((event) {
+      _passwordController.stream.listen((event) {
+        _genderController.stream.listen((event) {});
+      });
+    });
+  }
 }
-final bloc = _AuthBloc();
