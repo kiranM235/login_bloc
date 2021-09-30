@@ -29,4 +29,12 @@ class AuthBloc with AuthValidationMixin {
     _passwordController.close();
     _genderController.close();
   }
+
+  void listenStreams() {
+    _emailController.stream.listen((event) {
+      _passwordController.stream.listen((event) {
+        _genderController.stream.listen((event) {});
+      });
+    });
+  }
 }

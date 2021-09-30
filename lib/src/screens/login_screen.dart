@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:login_bloc/src/blocs/auth_bloc.dart';
+import 'package:login_bloc/src/blocs/auth_bloc_provider.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
-  final bloc = AuthBloc();
 
   @override
   Widget build(BuildContext context) {
+    AuthBloc bloc = AuthBlocProvider.of(context);
     return Container(
       margin: EdgeInsets.all(16),
       child: Column(
         children: [
-          buildEmailField(),
+          buildEmailField(bloc),
           SizedBox(height: 16),
-          buildPasswordField(),
+          buildPasswordField(bloc),
           SizedBox(height: 16),
-          buildGenderDropDown(),
+          buildGenderDropDown(bloc),
           SizedBox(height: 16),
           buildSubmitButton(),
         ],
@@ -23,55 +24,65 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget buildEmailField() {
+  Widget buildEmailField(AuthBloc bloc) {
     return StreamBuilder<String>(
-      stream: bloc.emailStream,
-      builder: (context, snapshot) {
-        return TextField(
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-              labelText: "Email address",
-              hintText: "you@example.com",
-              errorText: snapshot.hasError ? snapshot.error.toString() : null,
-              border: OutlineInputBorder()),
-          onChanged: (val) {
-            bloc.addEmail(val);
-          },
-        );
-      }
-    );
+        stream: bloc.emailStream,
+        builder: (context, AsyncSnapshot<String> snapshot) {
+          return TextField(
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+                labelText: "Email address",
+                hintText: "you@example.com",
+                //errorText: snapshot.error?.toString(),
+                errorText: snapshot.hasError ? snapshot.error.toString() : null,
+                border: OutlineInputBorder()),
+            onChanged: (val) {
+              bloc.addEmail(val);
+            },
+          );
+        });
   }
 
-  Widget buildPasswordField() {
-    return TextField(
-      obscureText: true,
-      decoration: InputDecoration(
-          labelText: "Your password",
-          hintText: "password",
-          border: OutlineInputBorder()),
-      onChanged: (val) {
-        bloc.addPassword(val);
-      },
-    );
+  Widget buildPasswordField(AuthBloc bloc) {
+    return StreamBuilder(
+        stream: bloc.passwordStream,
+        builder: (context, snapshot) {
+          return TextField(
+            obscureText: true,
+            decoration: InputDecoration(
+                labelText: "Your password",
+                hintText: "password",
+                errorText: snapshot.error?.toString(),
+                border: OutlineInputBorder()),
+            onChanged: (val) {
+              bloc.addPassword(val);
+            },
+          );
+        });
   }
 
-  Widget buildGenderDropDown() {
-    return DropdownButtonFormField<String>(
-      items: [
-        DropdownMenuItem(child: Text("Male"), value: "male"),
-        DropdownMenuItem(child: Text("Female"), value: "female"),
-        DropdownMenuItem(
-            child: Text("I don't wish to answer"),
-            value: "I don't wish to answer"),
-      ],
-      onChanged: (val) {
-        bloc.addGender(val!);
-      },
-      decoration: InputDecoration(
-          labelText: "Select your Gender",
-          hintText: "male/female",
-          border: OutlineInputBorder()),
-    );
+  Widget buildGenderDropDown(AuthBloc bloc) {
+    return StreamBuilder(
+        stream: bloc.genderStream,
+        builder: (context, AsyncSnapshot<String> snapshot) {
+          return DropdownButtonFormField<String>(
+            items: [
+              DropdownMenuItem(child: Text("Male"), value: "male"),
+              DropdownMenuItem(child: Text("Female"), value: "female"),
+              DropdownMenuItem(
+                  child: Text("I don't wish to answer"),
+                  value: "I don't wish to answer"),
+            ],
+            onChanged: (val) {
+              bloc.addGender(val!);
+            },
+            decoration: InputDecoration(
+                labelText: "Select your Gender",
+                hintText: "male/female",
+                errorText: snapshot.error?.toString(),
+                border: OutlineInputBorder()),
+          );
+        });
   }
 
   buildSubmitButton() {
