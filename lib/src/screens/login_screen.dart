@@ -35,11 +35,13 @@ class LoginScreen extends StatelessWidget {
                 hintText: "you@example.com",
                 //errorText: snapshot.error?.toString(),
                 errorText: snapshot.hasError ? snapshot.error.toString() : null,
-                border: OutlineInputBorder()),
+                border: OutlineInputBorder(),
+            ),
             onChanged:bloc.addEmail,
+          );
             },
           );
-        });
+        }
   }
 
   Widget buildPasswordField(AuthBloc bloc) {
@@ -52,8 +54,9 @@ class LoginScreen extends StatelessWidget {
                 labelText: "Your password",
                 hintText: "password",
                 errorText: snapshot.error?.toString(),
-                border: OutlineInputBorder()),
-              onChanged:bloc.addEmail,
+                border: OutlineInputBorder(),
+            ),
+              onChanged:bloc.addPassword,
           );
         });
   }
@@ -77,7 +80,8 @@ class LoginScreen extends StatelessWidget {
                 labelText: "Select your Gender",
                 hintText: "male/female",
                 errorText: snapshot.error?.toString(),
-                border: OutlineInputBorder()),
+                border: OutlineInputBorder(),
+            ),
           );
         });
   }
@@ -94,8 +98,7 @@ class LoginScreen extends StatelessWidget {
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(12), primary: Colors.teal),
           );
-        }
-      ),
+        }),
     );
   }
-}
+
